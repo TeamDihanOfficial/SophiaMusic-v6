@@ -629,13 +629,14 @@ async def play(_, message: Message):
                         InlineKeyboardButton("4️⃣", callback_data=f'plll 3|{query}|{user_id}'),
                         InlineKeyboardButton("5️⃣", callback_data=f'plll 4|{query}|{user_id}'),
                     ],
-                    [InlineKeyboardButton(text="Close ", callback_data="cls")],
+                    [InlineKeyboardButton(text="🗑 Close", callback_data="cls")],
                 ]
-            )       
+            )
+            await message.reply_photo(
+                photo=f"https://telegra.ph/file/2b29ea06a552c21aaea63.jpg", caption=toxxt, reply_markup=keyboard
+            )
             await lel.edit(toxxt,reply_markup=koyboard,disable_web_page_preview=True)
-            # WHY PEOPLE ALWAYS LOVE PORN ?? (A point to think)
-            return
-            # Returning to pornhub
+
         except:
             await lel.edit("No Enough results to choose.. Starting direct play..")
                         
