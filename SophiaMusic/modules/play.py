@@ -445,7 +445,7 @@ async def play(_, message: Message):
     global useer
     if message.chat.id in DISABLED_GROUPS:
         return    
-    lel = await message.reply("🔄 **Processing Sounds**")
+    lel = await message.reply("🔄 **Processing Sounds...**")
     administrators = await get_administrators(message.chat)
     chid = message.chat.id
 
@@ -556,125 +556,64 @@ async def play(_, message: Message):
         await lel.edit("🎵 **Downloading..**")
         ydl_opts = {"format": "bestaudio/best"}
         try:
-            results = YoutubeSearch(query, max_results=1).to_dict()
-            url = f"https://youtube.com{results[0]['url_suffix']}"
-            # print(results)
-            title = results[0]["title"][:40]
-            thumbnail = results[0]["thumbnails"][0]
-            thumb_name = f"thumb{title}.jpg"
-            thumb = requests.get(thumbnail, allow_redirects=True)
-            open(thumb_name, "wb").write(thumb.content)
-            duration = results[0]["duration"]
-            results[0]["url_suffix"]
-            views = results[0]["views"]
-
-        except Exception as e:
-            await lel.edit(
-                "Song not found.Try another song or maybe spell it properly."
-            )
-            print(str(e))
-            return
-        keyboard = InlineKeyboardMarkup(
-         [
-            [
-                InlineKeyboardButton("⏹", "leave"),
-                InlineKeyboardButton("⏸", "puse"),
-                InlineKeyboardButton("▶️", "resume"),
-                InlineKeyboardButton("⏭", "skip"),
-            ],
-           [
-                InlineKeyboardButton("🎚 Playlist ", "playlist"),
-                InlineKeyboardButton("Settings ⚙", "menu"),
-            ],
-            [InlineKeyboardButton(" Close Menu 🎛", "cls")],
-        ]
-    )
-        requested_by = message.from_user.first_name
-        await generate_cover(requested_by, title, views, duration, thumbnail)
-        file_path = await convert(youtube.download(url))        
-    else:
-        query = ""
-        for i in message.command[1:]:
-            query += " " + str(i)
-        print(query)
-        await lel.edit("🎵 **Downloading..**")
-        ydl_opts = {"format": "bestaudio/best"}
-        
-        try:
           results = YoutubeSearch(query, max_results=5).to_dict()
         except:
           await lel.edit("Give me something to play")
         # Looks like hell. Aren't it?? FUCK OFF
         try:
-            results = YoutubeSearch(query, max_results=5).to_dict()
-        except:
-            await lel.edit(
-                "😕 **song name not detected**\n\n» **please provide the name of the song you want to play**"
-            )
-
-        try:
-            toxxt = "\n"
+            toxxt = "**Select the song you want to play**\n\n"
             j = 0
-            user = user_name
-            emojilist = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
+            useer=user_name
+            emojilist = ["1️⃣","2️⃣","3️⃣","4️⃣","5️⃣",]
+
             while j < 5:
                 toxxt += f"{emojilist[j]} **Title - [{results[j]['title']}](https://youtube.com{results[j]['url_suffix']})**\n"
                 toxxt += f" ╚ **Duration** - {results[j]['duration']}\n"
                 toxxt += f" ╚ **Views** - {results[j]['views']}\n"
                 toxxt += f" ╚ **Channel** - {results[j]['channel']}\n\n"
-                j += 1
-            keyboard = InlineKeyboardMarkup(
+
+                j += 1            
+            koyboard = InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton(
-                            "1️⃣", callback_data=f"plll 0|{query}|{user_id}"
-                        ),
-                        InlineKeyboardButton(
-                            "2️⃣", callback_data=f"plll 1|{query}|{user_id}"
-                        ),
-                        InlineKeyboardButton(
-                            "3️⃣", callback_data=f"plll 2|{query}|{user_id}"
-                        ),
+                        InlineKeyboardButton("1️⃣", callback_data=f'plll 0|{query}|{user_id}'),
+                        InlineKeyboardButton("2️⃣", callback_data=f'plll 1|{query}|{user_id}'),
+                        InlineKeyboardButton("3️⃣", callback_data=f'plll 2|{query}|{user_id}'),
                     ],
                     [
-                        InlineKeyboardButton(
-                            "4️⃣", callback_data=f"plll 3|{query}|{user_id}"
-                        ),
-                        InlineKeyboardButton(
-                            "5️⃣", callback_data=f"plll 4|{query}|{user_id}"
-                        ),
+                        InlineKeyboardButton("4️⃣", callback_data=f'plll 3|{query}|{user_id}'),
+                        InlineKeyboardButton("5️⃣", callback_data=f'plll 4|{query}|{user_id}'),
                     ],
-                    [InlineKeyboardButton(text="🗑 Close", callback_data="cls")],
+                    [InlineKeyboardButton(text="Close ", callback_data="cls")],
                 ]
-            )
-            await message.reply_photo(
-                photo=f"{THUMB_IMG}", caption=toxxt, reply_markup=keyboard
-            )
-
-            await lel.delete()
-
+            )       
+            await lel.edit(toxxt,reply_markup=koyboard,disable_web_page_preview=True)
+            # WHY PEOPLE ALWAYS LOVE PORN ?? (A point to think)
             return
-
+            # Returning to pornhub
         except:
-            await lel.edit("__No more results to choose, starting to playing...__")
-
+            await lel.edit("No Enough results to choose.. Starting direct play..")
+                        
             # print(results)
             try:
                 url = f"https://youtube.com{results[0]['url_suffix']}"
-                title = results[0]["title"][:60]
+                title = results[0]["title"][:40]
                 thumbnail = results[0]["thumbnails"][0]
-                thumb_name = f"{title}.jpg"
+                thumb_name = f"thumb{title}.jpg"
                 thumb = requests.get(thumbnail, allow_redirects=True)
                 open(thumb_name, "wb").write(thumb.content)
                 duration = results[0]["duration"]
                 results[0]["url_suffix"]
-                results[0]["views"]
+                views = results[0]["views"]
+
             except Exception as e:
                 await lel.edit(
-                    "😕 **couldn't find song you requested**\n\n» **please provide the correct song name or include the artist's name as well**"
+                    "Song not found.Try another song or maybe spell it properly."
                 )
                 print(str(e))
                 return
+            dlurl=url
+            dlurl=dlurl.replace("youtube","youtubepp")
             keyboard = InlineKeyboardMarkup(
                  [
             [
