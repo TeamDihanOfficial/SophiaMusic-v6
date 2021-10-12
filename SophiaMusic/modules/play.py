@@ -22,6 +22,8 @@ from youtube_search import YoutubeSearch
 from SophiaMusic.config import ARQ_API_KEY
 from SophiaMusic.config import BOT_NAME as bn
 from SophiaMusic.config import DURATION_LIMIT
+
+
 from SophiaMusic.config import UPDATES_CHANNEL as updateschannel
 from SophiaMusic.config import que
 
@@ -633,7 +635,7 @@ async def play(_, message: Message):
                 ]
             )
             await message.reply_photo(
-                photo=f"https://telegra.ph/file/2b29ea06a552c21aaea63.jpg", caption=toxxt, reply_markup=keyboard
+                photo=f"{THUMB_IMG}", caption=toxxt, reply_markup=keyboard
             )
             await lel.edit(toxxt,reply_markup=koyboard,disable_web_page_preview=True)
 
