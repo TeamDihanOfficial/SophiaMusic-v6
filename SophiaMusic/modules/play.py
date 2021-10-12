@@ -574,8 +574,6 @@ async def play(_, message: Message):
             )
             print(str(e))
             return
-        dlurl=url
-        dlurl=dlurl.replace("youtube","youtubepp")
         keyboard = InlineKeyboardMarkup(
          [
             [
@@ -608,28 +606,43 @@ async def play(_, message: Message):
           await lel.edit("Give me something to play")
         # Looks like hell. Aren't it?? FUCK OFF
         try:
-            toxxt = "**Select the song you want to play**\n\n"
-            j = 0
-            useer=user_name
-            emojilist = ["1️⃣","2️⃣","3️⃣","4️⃣","5️⃣",]
+            results = YoutubeSearch(query, max_results=5).to_dict()
+        except:
+            await lel.edit(
+                "😕 **song name not detected**\n\n» **please provide the name of the song you want to play**"
+            )
 
+        try:
+            toxxt = "\n"
+            j = 0
+            user = user_name
+            emojilist = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
             while j < 5:
                 toxxt += f"{emojilist[j]} **Title - [{results[j]['title']}](https://youtube.com{results[j]['url_suffix']})**\n"
                 toxxt += f" ╚ **Duration** - {results[j]['duration']}\n"
                 toxxt += f" ╚ **Views** - {results[j]['views']}\n"
                 toxxt += f" ╚ **Channel** - {results[j]['channel']}\n\n"
-
-                j += 1            
-            koyboard = InlineKeyboardMarkup(
+                j += 1
+            keyboard = InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton("1️⃣", callback_data=f'plll 0|{query}|{user_id}'),
-                        InlineKeyboardButton("2️⃣", callback_data=f'plll 1|{query}|{user_id}'),
-                        InlineKeyboardButton("3️⃣", callback_data=f'plll 2|{query}|{user_id}'),
+                        InlineKeyboardButton(
+                            "1️⃣", callback_data=f"plll 0|{query}|{user_id}"
+                        ),
+                        InlineKeyboardButton(
+                            "2️⃣", callback_data=f"plll 1|{query}|{user_id}"
+                        ),
+                        InlineKeyboardButton(
+                            "3️⃣", callback_data=f"plll 2|{query}|{user_id}"
+                        ),
                     ],
                     [
-                        InlineKeyboardButton("4️⃣", callback_data=f'plll 3|{query}|{user_id}'),
-                        InlineKeyboardButton("5️⃣", callback_data=f'plll 4|{query}|{user_id}'),
+                        InlineKeyboardButton(
+                            "4️⃣", callback_data=f"plll 3|{query}|{user_id}"
+                        ),
+                        InlineKeyboardButton(
+                            "5️⃣", callback_data=f"plll 4|{query}|{user_id}"
+                        ),
                     ],
                     [InlineKeyboardButton(text="🗑 Close", callback_data="cls")],
                 ]
@@ -637,31 +650,31 @@ async def play(_, message: Message):
             await message.reply_photo(
                 photo=f"{THUMB_IMG}", caption=toxxt, reply_markup=keyboard
             )
-            await lel.edit(toxxt,reply_markup=koyboard,disable_web_page_preview=True)
+
+            await lel.delete()
+
+            return
 
         except:
-            await lel.edit("No Enough results to choose.. Starting direct play..")
-                        
+            await lel.edit("__No more results to choose, starting to playing...__")
+
             # print(results)
             try:
                 url = f"https://youtube.com{results[0]['url_suffix']}"
-                title = results[0]["title"][:40]
+                title = results[0]["title"][:60]
                 thumbnail = results[0]["thumbnails"][0]
-                thumb_name = f"thumb{title}.jpg"
+                thumb_name = f"{title}.jpg"
                 thumb = requests.get(thumbnail, allow_redirects=True)
                 open(thumb_name, "wb").write(thumb.content)
                 duration = results[0]["duration"]
                 results[0]["url_suffix"]
-                views = results[0]["views"]
-
+                results[0]["views"]
             except Exception as e:
                 await lel.edit(
-                    "Song not found.Try another song or maybe spell it properly."
+                    "😕 **couldn't find song you requested**\n\n» **please provide the correct song name or include the artist's name as well**"
                 )
                 print(str(e))
                 return
-            dlurl=url
-            dlurl=dlurl.replace("youtube","youtubepp")
             keyboard = InlineKeyboardMarkup(
                  [
             [
@@ -726,7 +739,7 @@ async def ytplay(_, message: Message):
     global que
     if message.chat.id in DISABLED_GROUPS:
         return
-    lel = await message.reply("🔄 **Processing**")
+    lel = await message.reply("🔄 **Processing..**")
     administrators = await get_administrators(message.chat)
     chid = message.chat.id
 
